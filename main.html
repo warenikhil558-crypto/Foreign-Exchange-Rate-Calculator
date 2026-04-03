@@ -46,21 +46,33 @@ async function convertCurrency() {
     let from = document.getElementById("fromCurrency").value;
     let to = document.getElementById("toCurrency").value;
 
+    if (amount === "" || amount <= 0) {
+        alert("Enter valid amount");
+        return;
+    }
+
     try {
         let response = await fetch(`https://open.er-api.com/v6/latest/${from}`);
         let data = await response.json();
 
-        let rate = data.rates[to];
-        let result = amount * rate;
+        if (data.result === "success") {
+            let rate = data.rates[to];
+            let result = amount * rate;
 
-        document.getElementById("result").innerText =
-            "Result: " + result.toFixed(2) + " " + to;
+            document.getElementById("result").innerText =
+                `${amount} ${from} = ${result.toFixed(2)} ${to}`;
+        } else {
+            document.getElementById("result").innerText =
+                "API Error!";
+        }
+
     } catch (error) {
         document.getElementById("result").innerText =
-            "Error fetching exchange rate!";
+            "Error loading data!";
     }
 }
 </script>
+
 
 
 </body>
